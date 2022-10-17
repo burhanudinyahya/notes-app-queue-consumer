@@ -1,0 +1,36 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    container_name: postgres-notesapp
+    image: postgres:9.6.21-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: notesappadmin
+      POSTGRES_PASSWORD: notesappadmin
+      POSTGRES_DB: notesappdb
+    ports:
+      - 5433:5432
+    volumes:
+      - ./.postgres-data:/var/lib/postgresql/data
+    networks:
+      - notesapp_network
+
+  rabbitmq:
+    container_name: rabbitmq-notesapp
+    image: rabbitmq:3-management-alpine
+    restart: always
+    ports:
+        - 5672:5672
+        - 15672:15672
+    volumes:
+        - ./.rabbitmq-data:/var/lib/rabbitmq
+        - ./.rabbitmq-log/:/var/log/rabbitmq
+    networks:
+        - notesapp_network
+
+networks:
+  notesapp_network:
+    name: notesapp_network
+    driver: bridge
